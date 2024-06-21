@@ -43,7 +43,7 @@ public class State_Update
 
     
 
-    public int Transformation(int amount)
+    public virtual int Transformation(int amount)
     {
         switch (amount)
         {
@@ -85,9 +85,27 @@ public class Hunger : State_Update
 
 public class Hyglene : State_Update
 {
-    public Hyglene(Image image)
+    public Hyglene()
     {
-        this.image = image;
+        this.image = StateManager.inst.hyglene_image;
+    }
+
+    public override void Color_and_Image(int amount)
+    {
+        int index = Transformation(amount);
+
+        switch (index)
+        {
+            case 2:
+                image.color = Color.green;
+                break;
+            case 1:
+                image.color = Color.yellow;
+                break;
+            case 0:
+                image.color = Color.red;
+                break;
+        }
     }
 }
 
@@ -95,10 +113,10 @@ public class Happiness : State_Update
 {
     Sprite[] sprites { get; set; }
 
-    public Happiness(Image image, Sprite[] sprites)
+    public Happiness()
     {
-        this.image = image;
-        this.sprites = sprites;
+        this.image = StateManager.inst.happiness_image;
+        this.sprites = StateManager.inst.happiness_sprites;
     }
 
     public override void Color_and_Image(int amount)
@@ -110,13 +128,13 @@ public class Happiness : State_Update
         switch (index)
         {
             case 2:
-                image.color = Color.red;
+                image.color = Color.green;
                 break;
             case 1:
                 image.color = Color.yellow;
                 break;
             case 0:
-                image.color = Color.green;
+                image.color = Color.red;
                 break;
         }
     }
@@ -132,22 +150,48 @@ public class Weight : State_Update
         this.sprites = StateManager.inst.weight_sprites;
     }
 
+    public override int Transformation(int amount)
+    {
+        switch (amount)
+        {
+            case 100: //2단계 비만
+                return 4;
+            case > 65: //1단계 비만
+                return 3;
+            case > 35: //평균
+                return 2;
+            case > 0:  //1단계 저체중
+                return 1;
+            default: //2단계 저체중
+                return 0;
+        }
+    }
+
     public override void Color_and_Image(int amount)
     {
         int index = Transformation(amount);
 
-        image.sprite = sprites[index];
-
         switch (index)
         {
-            case 2:
+            case 4:
                 image.color = Color.red;
+                image.sprite = sprites[2];
+                break;
+            case 3:
+                image.color = Color.yellow;
+                image.sprite = sprites[2];
+                break;
+            case 2:
+                image.color = Color.green;
+                image.sprite = sprites[1];
                 break;
             case 1:
                 image.color = Color.yellow;
+                image.sprite = sprites[0];
                 break;
             case 0:
-                image.color = Color.green;
+                image.color = Color.red;
+                image.sprite = sprites[0];
                 break;
         }
     }
@@ -155,9 +199,9 @@ public class Weight : State_Update
 
 public class Disease : State_Update
 {
-    public Disease(Image image)
+    public Disease()
     {
-        this.image = image;
+        this.image = StateManager.inst.disease_image;
     }
 }
 #endregion
