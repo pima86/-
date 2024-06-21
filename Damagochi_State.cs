@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-
 #region 펫의 능력치와 기능을 구현하는 추상 클래스
+using System;
+using System.Reflection;
+using UnityEngine;
+using UnityEngine.UI;
+
 public abstract class Pet_state
 {
     //몬스터의 성장 단계를 나타내는 열거형
@@ -36,94 +36,122 @@ public class Baby : Pet_state //유년기
 
 }
 #endregion
-#region 각 능력치별 아이콘 색상 및 이미지를 구현하는 인터페이스
-interface IState
+#region 각 능력치별 아이콘 색상 및 이미지를 구현하는 가상 함수
+public class State_Update
 {
-    int SetUp(int amount);
+    public Image image { get; set; }
+
+    
+
+    public int Transformation(int amount)
+    {
+        switch (amount)
+        {
+            case > 65: //수치가 높은 상태
+                return 2;
+            case > 35: //평균 상태
+                return 1;
+            default: //수치가 낮은 상태
+                return 0;
+        }
+    }
+
+    public virtual void Color_and_Image(int index)
+    {
+        switch (index)
+        {
+            case 2:
+                image.color = Color.red;
+                break;
+            case 1:
+                image.color = Color.yellow;
+                break;
+            case 0:
+                image.color = Color.green;
+                break;
+        }
+    }
 }
 
-class Hunger : IState
+public class Hunger : State_Update
 {
-    public int SetUp(int amount)
+    public Hunger(Image image)
     {
-        switch (amount)
-        {
-            case > 65: //배고픔
-                return 0;
-            case > 35: //중간
-                return 1;
-            default: //배부름
-                return 2;
-        }
+        this.image = image;
     }
 }
-class Hyglene : IState
-{
-    public int SetUp(int amount)
-    {
-        switch (amount)
-        {
-            case > 65: //청결한
-                return 2;
-            case > 35: //중간
-                return 1;
-            default: //더러움
-                return 0;
-        }
-    }
-}
-class Happiness : IState
-{
-    public int SetUp(int amount)
-    {
-        switch (amount)
-        {
-            case > 65: //행복
-                return 2;
-            case > 35: //중간
-                return 1;
-            default: //불행
-                return 0;
-        }
-    }
-}
-class Weight : IState
-{
-    public int SetUp(int amount)
-    {
-        switch (amount)
-        {
-            //살찜
-            case 100: //최대치 체중
-                return 4;
-            case > 65: //과체중
-                return 3;
 
-            //마름
-            case 0: //최소치 체중
-                return 0;
-            case <= 35: //저체중
-                return 1;
+public class Hyglene : State_Update
+{
+    public Hyglene(Image image)
+    {
+        this.image = image;
+    }
+}
 
-            //평균
-            default:
-                return 2;
+public class Happiness : State_Update
+{
+    Sprite[] sprites { get; set; }
+
+    public Happiness(Image image, Sprite[] sprites)
+    {
+        this.image = image;
+        this.sprites = sprites;
+    }
+
+    public override void Color_and_Image(int index)
+    {
+        image.sprite = sprites[index];
+
+        switch (index)
+        {
+            case 2:
+                image.color = Color.red;
+                break;
+            case 1:
+                image.color = Color.yellow;
+                break;
+            case 0:
+                image.color = Color.green;
+                break;
         }
     }
 }
-class Disease : IState
+
+public class Weight : State_Update
 {
-    public int SetUp(int amount)
+    Sprite[] sprites { get; set; }
+
+    public Weight(Image image, Sprite[] sprites)
     {
-        switch (amount)
+        this.image = image;
+        this.sprites = sprites;
+    }
+
+    public override void Color_and_Image(int index)
+    {
+        image.sprite = sprites[index];
+
+        switch (index)
         {
-            case > 65: //아픔
-                return 0;
-            case > 35: //조금 아픔
-                return 1;
-            default: //안아픔
-                return 2;
+            case 2:
+                image.color = Color.red;
+                break;
+            case 1:
+                image.color = Color.yellow;
+                break;
+            case 0:
+                image.color = Color.green;
+                break;
         }
+    }
+}
+
+public class Disease : State_Update
+{
+    public Disease(Image image)
+    {
+        this.image = image;
     }
 }
 #endregion
