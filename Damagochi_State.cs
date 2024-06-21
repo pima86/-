@@ -56,8 +56,10 @@ public class State_Update
         }
     }
 
-    public virtual void Color_and_Image(int index)
+    public virtual void Color_and_Image(int amount)
     {
+        int index = Transformation(amount);
+
         switch (index)
         {
             case 2:
@@ -75,9 +77,9 @@ public class State_Update
 
 public class Hunger : State_Update
 {
-    public Hunger(Image image)
+    public Hunger()
     {
-        this.image = image;
+        this.image = StateManager.inst.hunger_image;
     }
 }
 
@@ -99,8 +101,10 @@ public class Happiness : State_Update
         this.sprites = sprites;
     }
 
-    public override void Color_and_Image(int index)
+    public override void Color_and_Image(int amount)
     {
+        int index = Transformation(amount);
+
         image.sprite = sprites[index];
 
         switch (index)
@@ -122,14 +126,16 @@ public class Weight : State_Update
 {
     Sprite[] sprites { get; set; }
 
-    public Weight(Image image, Sprite[] sprites)
+    public Weight()
     {
-        this.image = image;
-        this.sprites = sprites;
+        this.image = StateManager.inst.weight_image;
+        this.sprites = StateManager.inst.weight_sprites;
     }
 
-    public override void Color_and_Image(int index)
+    public override void Color_and_Image(int amount)
     {
+        int index = Transformation(amount);
+
         image.sprite = sprites[index];
 
         switch (index)
